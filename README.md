@@ -28,32 +28,33 @@ Group: Anonymous Logon
 
 Discresionary ACE:
 
-    Element #0:
+    Element #0: (A;;GA;;;SY)
 		ACEType: [ACCESS_ALLOWED]
 		ACEFlags: []
 		ACEPermissions: [SDDL_GENERIC_ALL]
 		ACEObjectType: 
 		ACEInheritedObjectType: 
 		ACETrustee: Local system
-    Element #1:
+    Element #1: (A;;GRGWGX;;;BA)
 		ACEType: [ACCESS_ALLOWED]
 		ACEFlags: []
 		ACEPermissions: [SDDL_GENERIC_READ, SDDL_GENERIC_WRITE, SDDL_GENERIC_EXECUTE]
 		ACEObjectType: 
 		ACEInheritedObjectType: 
 		ACETrustee: Builtin (local) administrators
-    Element #2:
+    Element #2: (A;;GRGWGX;;;WD)
 		ACEType: [ACCESS_ALLOWED]
 		ACEFlags: []
 		ACEPermissions: [SDDL_GENERIC_READ, SDDL_GENERIC_WRITE, SDDL_GENERIC_EXECUTE]
 		ACEObjectType: 
 		ACEInheritedObjectType: 
 		ACETrustee: Everyone ( World )
-    Element #3:
+    Element #3: (A;;GRGX;;;RC)
 		ACEType: [ACCESS_ALLOWED]
 		ACEFlags: []
 		ACEPermissions: [SDDL_GENERIC_READ, SDDL_GENERIC_EXECUTE]
 		ACEObjectType: 
 		ACEInheritedObjectType: 
 		ACETrustee: Restricted code
+
 

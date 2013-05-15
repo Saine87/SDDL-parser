@@ -30,14 +30,14 @@ public class Sddl extends SddlConstants {
             s = s + ("Discresionary ACE:\n");
             int i = 0;
             for(Sddl.Ace ace: daces){
-                s = s +  ("    Element #" + i++ + ":\n" + ace.toString());
+                s = s +  ("    Element #" + i++ + ": (" + ace.aceStr + ")\n" + ace.toString());
             }
         }
         if(saces != null){
             s = s + ("Security ACE:\n");
             int i = 0;
             for(Sddl.Ace ace: saces){
-                s = s + ("   Element #" + i++ + ":\n" + ace.toString());
+                s = s + ("   Element #" + i++ + ": (" + ace.aceStr + ")\n" + ace.toString());
             }
         }
         return s;
@@ -160,6 +160,7 @@ public class Sddl extends SddlConstants {
 	}
 
 	public class Ace {
+        String aceStr;
 		AceType[] aceType;								//allow/deny/audit
 		AceFlag[] aceFlags;								//inheritance and audit settings
 		AceRight[] acePermissions;						//list of incremental permissions
@@ -170,6 +171,7 @@ public class Sddl extends SddlConstants {
 		Ace(String ace) {
 			if (ace != null && !ace.isEmpty()) {
 				try {
+                    this.aceStr = ace;
 					String[] fields = ace.split(SDDL_SEPERATOR);
 					if (fields.length == 6) {
 						aceType = tokenParse(fields[0], aceTypeMap, SDDL_ACE_TYPE_SIZE, new AceType[0]);
