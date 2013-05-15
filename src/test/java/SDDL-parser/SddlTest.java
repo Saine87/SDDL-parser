@@ -4,9 +4,7 @@
 package sddl;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import sddl.Sddl.InvalidTokenInSddl;
 import sddl.Sddl.NullACLsInSddl;
 import sddl.Sddl.UnSupportedTagInSddl;
