@@ -1,6 +1,4 @@
 # SDDL Parser
-===
-
 
 
 ## Overview
@@ -19,7 +17,9 @@ java -classpath target/SDDL-parser-1.0-SNAPSHOT.jar sddl.Parser "O:AUG:AND:P(A;;
 
 #### output
 
-Parsing Security Descriptor Definition Language (SDDL) string: [ O:AUG:AND:P(A;;GA;;;SY)(A;;GRGWGX;;;BA)(A;;GRGWGX;;;WD)(A;;GRGX;;;RC) ] 
+Parsing Security Descriptor Definition Language (SDDL) string: 
+
+[ O:AUG:AND:P(A;;GA;;;SY)(A;;GRGWGX;;;BA)(A;;GRGWGX;;;WD)(A;;GRGX;;;RC) ] 
 
 
 Owner: Authenticated users
