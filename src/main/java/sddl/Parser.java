@@ -11,8 +11,10 @@ public class Parser {
 
         try {
 
-            Sddl sddl = new Sddl("D:P(A;;GA;;;SY)(A;;GRGWGX;;;BA)(A;;GRGWGX;;;WD)(A;;GRGX;;;RC)");
-            System.out.println(sddl.parse());
+            for(String i: args){
+                Sddl sddl = new Sddl(i);
+                System.out.println(sddl.parse());
+            }
 
         } catch (Sddl.NullACLsInSddl nullACLsInSddl) {
             nullACLsInSddl.printStackTrace();
