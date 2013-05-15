@@ -18,7 +18,31 @@ import java.util.*;
 */
 public class Sddl extends SddlConstants {
 	static int errs;
-	
+
+    public String parse(){
+
+        String s = "Parsing Security Descriptor Definition Language (SDDL) string: [Â " + this.toString() + " ] \n";
+        if( owner != null)
+            s = s + ("Owner: " + owner + "\n");
+        if(group != null)
+            s = s + ("Group: " + group + "\n");
+        if(daces != null){
+            s = s + ("Discresionary ACE:\n");
+            int i = 0;
+            for(Sddl.Ace ace: daces){
+                s = s +  ("    Element #" + i++ + ":\n" + ace.toString());
+            }
+        }
+        if(saces != null){
+            s = s + ("Security ACE:\n");
+            int i = 0;
+            for(Sddl.Ace ace: saces){
+                s = s + ("   Element #" + i++ + ":\n" + ace.toString());
+            }
+        }
+        return s;
+    }
+
 	static class NullACLsInSddl extends Exception {
 		private static final long serialVersionUID = 1L;
 
@@ -27,7 +51,7 @@ public class Sddl extends SddlConstants {
 			errs++;
 		}
 	}
-	
+
 	static class UnSupportedTagInSddl extends Exception {
 		private static final long serialVersionUID = 1L;
 
@@ -38,7 +62,7 @@ public class Sddl extends SddlConstants {
 			errs++;
 		}
 	}
-	
+
 	static class InvalidTokenInSddl extends Exception {
 		private static final long serialVersionUID = 1L;
 
@@ -50,7 +74,7 @@ public class Sddl extends SddlConstants {
 			errs++;
 		}
 	}
-	
+
 	static class IllegalFormatSddl extends Exception {
 		private static final long serialVersionUID = 1L;
 
@@ -59,9 +83,9 @@ public class Sddl extends SddlConstants {
 			errs++;
 		}
 	}
-	
+
 	/* Except from: http://msdn.microsoft.com/en-us/library/aa379597%28VS.85%29.aspx
-	 * 				
+	 *
 	 * SID Components
 	 * A SID value includes components that provide information about the SID structure and components
 	 * that uniquely identify a trustee. A SID consists of the following components:
@@ -72,27 +96,27 @@ public class Sddl extends SddlConstants {
 
 	 * These functions use the following standardized string notation for SIDs, which makes it simpler to
 	 *  visualize their components:
-	 *  S-R-I-S¡­
+	 *  S-R-I-Sï¿½ï¿½
 	 *  In this notation, the literal character "S" identifies the series of digits as a SID,
-	 *  R is the revision level, I is the identifier-authority value, and S¡­ is one or more subauthority values.
-	 *  
+	 *  R is the revision level, I is the identifier-authority value, and Sï¿½ï¿½ is one or more subauthority values.
+	 *
 	 * In the security descriptor definition language (SDDL), security descriptor string use SID strings for the following components of a security descriptor:
      *    Owner
      *    Primary group
      *    The trustee in an ACE
-     * A SID string in a security descriptor string can use either the standard string representation of 
-     * a SID (S-R-I-S-S¡­) or one of the string constants defined in Sddl.h. For more information about the 
+     * A SID string in a security descriptor string can use either the standard string representation of
+     * a SID (S-R-I-S-Sï¿½ï¿½) or one of the string constants defined in Sddl.h. For more information about the
      * standard SID string notation, see SID Components.
-     * 
+     *
      * Well-known security identifiers (SIDs) identify generic groups and generic users. For example,
      * there are well-known SIDs to identify the following groups and users:
      * Everyone or World, which is a group that includes all users.
      * CREATOR_OWNER, which is used as a placeholder in an inheritable ACE. When the ACE is inherited,
      * the system replaces the CREATOR_OWNER SID with the SID of the object's creator.
      * The Administrators group for the built-in domain on the local computer.
-     * 
+     *
      * There are universal well-known SIDs, which are meaningful on all secure systems using this security
-     *  model, including operating systems other than Windows. In addition, there are well-known SIDs that 
+     *  model, including operating systems other than Windows. In addition, there are well-known SIDs that
      *  are meaningful only on Windows systems.
 	 */
 	// First we check if it is a SID constant string defined in sddl.h, which is a subset of well-known SIDs.
@@ -105,7 +129,7 @@ public class Sddl extends SddlConstants {
 		String descr;								// human-readable description
 		private boolean isConstant;
 		private String[] sub;						// S-R-I-S-S...
-		
+
 		Sid(String sidstr) {
 			if (sidstr != null && !sidstr.isEmpty()) {
 				try {
@@ -124,23 +148,25 @@ public class Sddl extends SddlConstants {
 					System.out.println(e.getMessage());
 				}
 			}
-			
+
 			this.sidstr = sidstr;
 		}
-		
+
 		boolean isConstant() { return isConstant; }
 		@Override
 		public String toString() { return (descr != null ? descr : (name != null ? name : sidstr)); }
+
+
 	}
-	
-	class Ace {
+
+	public class Ace {
 		AceType[] aceType;								//allow/deny/audit
 		AceFlag[] aceFlags;								//inheritance and audit settings
 		AceRight[] acePermissions;						//list of incremental permissions
 		Sid gUID;										//Object type
 		Sid iGUID;										//Inherited object type
 		Sid sID;										//Trustee
-		
+
 		Ace(String ace) {
 			if (ace != null && !ace.isEmpty()) {
 				try {
@@ -158,52 +184,52 @@ public class Sddl extends SddlConstants {
 				}
 			}
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuilder str = new StringBuilder();
-			
-			if (this.aceType == null) 
+
+			if (this.aceType == null)
 				str.append("\tACEType:\t" + NL);
 			else
 				str.append("\t\tACEType: " + Arrays.toString(this.aceType) + NL);
-			
-			if (this.aceFlags == null) 
+
+			if (this.aceFlags == null)
 				str.append("\tACEFlags:\t" + NL);
 			else
 				str.append("\t\tACEFlags: " + Arrays.toString(this.aceFlags) + NL);
-			
-			if (this.acePermissions == null) 
+
+			if (this.acePermissions == null)
 				str.append("\tACEPermissions:\t" + NL);
 			else
 				str.append("\t\tACEPermissions: " + Arrays.toString(this.acePermissions) + NL);
-			
+
 			str.append("\t\tACEObjectType: " + this.gUID + NL);
 			str.append("\t\tACEInheritedObjectType: " + this.iGUID + NL);
 			str.append("\t\tACETrustee: " + this.sID + NL);
-			
+
 			return str.toString();
 		}
 	}
-	
+
 	String header;						//revision info etc.
 	EnumSet<SdCtr>	control;			//http://msdn.microsoft.com/en-us/library/aa379566%28VS.85%29.aspx
-	
+
 	Sid owner;
 	Sid group;
 	SddlFlag[] daclFlags;
 	Ace[] daces;
 	SddlFlag[] saclFlags;
 	Ace[] saces;
-	
+
 	private String sddlstr;				// normalized sddl string
-	
+
 	//list of standard sids and guids in this sddl string, passed into
 	//RPC routine resolveSids() for resolving sids.
 	//SID constants defined in sddl.h and the well-known SIDs including both universal and specific Windows platfrom
 	// are resolved here in SDDL construct. Other SIDs are resolved in Class SddlFormat by calling RPC to the server.
-	List<Sid>	sidlist = Collections.synchronizedList(new LinkedList<Sid>());	
-	
+	List<Sid>	sidlist = Collections.synchronizedList(new LinkedList<Sid>());
+
 	/*
 	 * @param sddlstr
 	 * @throws NullACLsInSddl
@@ -238,7 +264,7 @@ public class Sddl extends SddlConstants {
 		 *  The SE_SELF_RELATIVE bit is not stored in the string, but ConvertStringSecurityDescriptorToSecurityDescriptor
 		 *  always sets this bit in the output security descriptor.
 		 */
-		// Please refer to SDDL string format description in http://msdn.microsoft.com/en-us/library/aa379570%28VS.85%29.aspx		
+		// Please refer to SDDL string format description in http://msdn.microsoft.com/en-us/library/aa379570%28VS.85%29.aspx
 		if (sddlstr == null || sddlstr.isEmpty()) {
 			throw new NullACLsInSddl();
 		}
@@ -250,9 +276,9 @@ public class Sddl extends SddlConstants {
 
 		// eliminate whitespace characters if any
 		sddlstr = sddlstr.replaceAll(SDDL_SPACES, SDDL_EMPTY);
-		
+
 		this.control = EnumSet.of(SdCtr.SE_SELF_RELATIVE);
-		
+
 		String[] tokens = sddlstr.split(SDDL_DELIMINATOR);
 
 		for (int i =0; i < tokens.length - 1; i++) {
@@ -279,11 +305,11 @@ public class Sddl extends SddlConstants {
 				throw new UnSupportedTagInSddl(tag, sddlstr);
 			}
 		}
-		
+
 		// look for SID descriptions for the well-known SIDs
 		for (Iterator<Sid> siditer = sidlist.iterator(); siditer.hasNext();) {
 			Sid sid = siditer.next();
-			
+
 			if (wellKnownSidMap.containsKey(sid.sidstr)) {
 				sid.name = wellKnownSidMap.get(sid.sidstr).toString();
 				siditer.remove();
@@ -297,21 +323,21 @@ public class Sddl extends SddlConstants {
 				siditer.remove();
 			}
 		}
-		
+
 		// the rest SIDs are resolved in Class SddlFormat by calling RPC routine to the server
 
 		// keep record of the normalized sddl string
 		this.sddlstr = sddlstr;
 	}
-	
+
 	private void toACL(String token, final char tag) {
 		SddlFlag[] aclFlags = null;
 		Ace[] aces = null;
-		
+
 		if (!token.isEmpty()) {
 			//there must be a '('
 			int f_endindex = token.indexOf(SDDL_ACE_BEGINC);
-			if (f_endindex > 0) 
+			if (f_endindex > 0)
 				try {
 					aclFlags = tokenParse(token.substring(0, f_endindex), sddlFlagMap, SDDL_FLAG_SIZE, new SddlFlag[0]);
 				} catch (Exception e) {
@@ -333,7 +359,7 @@ public class Sddl extends SddlConstants {
 			this.saces = aces;
 		}
 	}
-	
+
 	/*
 	 * @param token is the String to be parsed.
 	 * @param tokenMap is the token map parsed against.
@@ -342,7 +368,7 @@ public class Sddl extends SddlConstants {
 	 */
 	private static <T extends Enum<T>> T[] tokenParse(String token, Map<String, T> tokenMap, int tokenSize, T[] ta) throws InvalidTokenInSddl {
 		List<T> list = new ArrayList<T>();
-		
+
 		int	index = 0;
 		String tok = token.substring(index);
 		int tSize = tokenSize;
@@ -370,10 +396,10 @@ public class Sddl extends SddlConstants {
 			tok = token.substring(index);
 			tSize = tokenSize;
 		} //end of outer while
-		
+
 		return (list.toArray(ta));
 	}
-	
+
 	// return a normalized SDDL String: legal with whitespace characters removed
 	@Override
 	public String toString() {
